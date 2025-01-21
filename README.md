@@ -1,17 +1,37 @@
 # Web3 AI Model Training Marketplace
 
-A decentralized marketplace for AI training datasets built with Next.js, Internet Computer Protocol (ICP), and Rust CDK.
+A production-ready decentralized marketplace for AI training datasets built with Next.js, Internet Computer Protocol (ICP), and Calimero SDK.
 
-## Features
+## 🚀 Quick Start
 
-- Secure dataset storage using Calimero SDK
-- ICP smart contract integration for secure payments
-- PyTorch integration for AI model training
-- Modern, responsive UI with Tailwind CSS
-- Form validation and type safety with Zod
-- Comprehensive marketplace features
+### Prerequisites
 
-## Frontend Setup
+1. Install Node.js (v16 or later)
+2. Install DFX (Internet Computer SDK):
+```bash
+sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+```
+3. Install Rust toolchain:
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### Environment Setup
+
+1. Clone the repository
+2. Create a `.env.local` file:
+```bash
+# Internet Computer
+IC_HOST=https://ic0.app
+IC_CANISTER_ID=your_canister_id
+IC_IDENTITY_PEM=your_identity_pem
+
+# Calimero SDK
+CALIMERO_API_KEY=your_api_key
+CALIMERO_PROJECT_ID=your_project_id
+```
+
+### Development
 
 1. Install dependencies:
 ```bash
@@ -23,100 +43,144 @@ npm install
 npm run dev
 ```
 
-## Smart Contract Setup
-
-### Prerequisites
-
-1. Install Rust and Cargo:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-2. Install the IC SDK:
-```bash
-sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-```
-
-3. Install the Calimero SDK for dataset encryption:
-```bash
-cargo install calimero-sdk
-```
-
-### Smart Contract Development
-
-1. Navigate to the `contracts` directory:
-```bash
-cd contracts
-```
-
-2. Build the smart contracts:
-```bash
-cargo build --target wasm32-unknown-unknown --release
-```
-
-3. Deploy to the Internet Computer:
+3. Deploy smart contracts (requires dfx):
 ```bash
 dfx deploy
 ```
 
-## Project Structure
+## 🏗 Architecture
 
+### Frontend (Next.js)
+- Modern React with TypeScript
+- Dark theme by default
+- Responsive Tailwind CSS design
+- shadcn/ui components
+- Client-side IC integration
+
+### Backend (Internet Computer)
+- Rust-based canisters
+- Smart contract logic for:
+  - Dataset management
+  - Payment processing
+  - Access control
+
+### Data Security (Calimero SDK)
+- End-to-end encryption
+- Secure key management
+- Access control integration
+
+## 🔐 Security Setup
+
+### Internet Computer Integration
+
+1. Generate a new identity:
+```bash
+dfx identity new development
+dfx identity use development
 ```
-├── app/                    # Next.js pages and components
-│   ├── marketplace/       # Dataset marketplace
-│   ├── upload/           # Dataset upload
-│   └── page.tsx          # Landing page
-├── components/            # Reusable UI components
-├── contracts/            # Rust smart contracts
-│   ├── src/             # Contract source code
-│   └── Cargo.toml       # Rust dependencies
-└── public/               # Static assets
+
+2. Export the identity:
+```bash
+dfx identity export development > identity.pem
 ```
 
-## Smart Contract Architecture
+3. Deploy canisters:
+```bash
+dfx deploy --network ic
+```
 
-The smart contracts handle:
+### Calimero SDK Setup
 
-1. Dataset Registration
-- Register new datasets with metadata
-- Set pricing and access controls
-- Handle dataset encryption keys
+1. Create a Calimero account at https://calimero.network
+2. Generate API credentials
+3. Add to environment variables
 
-2. Payment Processing
-- Process ICP payments
-- Transfer tokens between buyers and sellers
-- Handle escrow for secure transactions
+## 🌍 Global Deployment
 
-3. Access Control
-- Manage dataset access permissions
-- Handle key distribution
-- Implement time-based access controls
+### Frontend Deployment
 
-## Security Considerations
+1. Build the application:
+```bash
+npm run build
+```
 
-1. Dataset Security
-- All datasets are encrypted using the Calimero SDK
-- Keys are managed through secure smart contracts
-- Access is granted only after successful payment
+2. Deploy to your preferred hosting (Vercel/Netlify):
+```bash
+# Vercel
+vercel --prod
 
-2. Payment Security
-- Smart contracts handle all financial transactions
-- Escrow system protects both buyers and sellers
-- Automatic payment distribution
+# Netlify
+netlify deploy --prod
+```
 
-3. Access Control
-- Role-based access control
-- Time-limited dataset access
-- Revocation capabilities
+### Smart Contract Deployment
 
-## Contributing
+1. Prepare for production:
+```bash
+dfx build --network ic
+```
+
+2. Deploy to IC mainnet:
+```bash
+dfx deploy --network ic
+```
+
+3. Update environment variables with production canister IDs
+
+## 🔧 Configuration
+
+### Internet Computer
+- Network: `ic` (mainnet) or `local` (development)
+- Identity management
+- Canister settings
+
+### Calimero SDK
+- Encryption settings
+- Access control policies
+- Key rotation policies
+
+## 📦 Features
+
+- 🎨 Dark theme by default
+- 🔒 End-to-end encryption
+- 💰 ICP payment integration
+- 📊 Dataset marketplace
+- 🤖 AI model integration
+- 🔑 Access control
+- 📱 Responsive design
+
+## 🛠 Development Guidelines
+
+1. Smart Contract Development
+   - Write tests for all canisters
+   - Use proper error handling
+   - Implement access control
+
+2. Frontend Development
+   - Follow Next.js best practices
+   - Maintain type safety
+   - Use proper error boundaries
+
+3. Security
+   - Regular security audits
+   - Key rotation
+   - Access control testing
+
+## 📄 License
+
+MIT License
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Commit your changes
+3. Commit changes
 4. Push to the branch
-5. Create a Pull Request
+5. Open a Pull Request
 
-## License
+## ⚠️ Important Notes
 
-MIT License
+- Always backup encryption keys
+- Keep environment variables secure
+- Regular security updates
+- Monitor smart contract activity

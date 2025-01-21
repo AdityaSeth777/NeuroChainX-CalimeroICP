@@ -1,0 +1,24 @@
+type Dataset = record {
+  id: text;
+  owner: principal;
+  title: text;
+  description: text;
+  price: nat64;
+  encrypted_url: text;
+  category: text;
+  created_at: nat64;
+};
+
+type Purchase = record {
+  dataset_id: text;
+  buyer: principal;
+  price: nat64;
+  timestamp: nat64;
+};
+
+service : {
+  register_dataset: (text, text, nat64, text, text) -> (text);
+  get_dataset: (text) -> (opt Dataset) query;
+  list_datasets: () -> (vec Dataset) query;
+  purchase_dataset: (text) -> ();
+}

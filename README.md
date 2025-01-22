@@ -1,6 +1,6 @@
 # Web3 AI Model Training Marketplace
 
-A production-ready decentralized marketplace for AI training datasets built with Next.js, Internet Computer Protocol (ICP), and Calimero SDK.
+A production-ready decentralized marketplace for AI training datasets built with Next.js and Internet Computer Protocol (ICP).
 
 ## 🚀 Quick Start
 
@@ -24,11 +24,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # Internet Computer
 IC_HOST=https://ic0.app
 IC_CANISTER_ID=your_canister_id
-IC_IDENTITY_PEM=your_identity_pem
-
-# Calimero SDK
-CALIMERO_API_KEY=your_api_key
-CALIMERO_PROJECT_ID=your_project_id
 ```
 
 ### Development
@@ -43,7 +38,7 @@ npm install
 npm run dev
 ```
 
-3. Deploy smart contracts (requires dfx):
+3. Deploy smart contracts:
 ```bash
 dfx deploy
 ```
@@ -64,11 +59,6 @@ dfx deploy
   - Payment processing
   - Access control
 
-### Data Security (Calimero SDK)
-- End-to-end encryption
-- Secure key management
-- Access control integration
-
 ## 🔐 Security Setup
 
 ### Internet Computer Integration
@@ -88,12 +78,6 @@ dfx identity export development > identity.pem
 ```bash
 dfx deploy --network ic
 ```
-
-### Calimero SDK Setup
-
-1. Create a Calimero account at https://calimero.network
-2. Generate API credentials
-3. Add to environment variables
 
 ## 🌍 Global Deployment
 
@@ -134,15 +118,9 @@ dfx deploy --network ic
 - Identity management
 - Canister settings
 
-### Calimero SDK
-- Encryption settings
-- Access control policies
-- Key rotation policies
-
 ## 📦 Features
 
 - 🎨 Dark theme by default
-- 🔒 End-to-end encryption
 - 💰 ICP payment integration
 - 📊 Dataset marketplace
 - 🤖 AI model integration
@@ -180,7 +158,6 @@ MIT License
 
 ## ⚠️ Important Notes
 
-- Always backup encryption keys
 - Keep environment variables secure
 - Regular security updates
 - Monitor smart contract activity

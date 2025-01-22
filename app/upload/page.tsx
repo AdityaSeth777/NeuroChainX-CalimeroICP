@@ -24,6 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { useIC } from '@/lib/hooks/use-ic';
 
 const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -38,8 +39,26 @@ export default function UploadPage() {
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const { registerDataset } = useIC();
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      // Convert file to ArrayBuffer for storage
+      const fileBuffer = await values.file.arrayBuffer();
+      
+      // Register dataset with IC
+      const datasetId = await registerDataset(
+        values.title,
+        values.description,
+        BigInt(Math.floor(parseFloat(values.price) * 100000000)), // Convert to ICP units
+        Buffer.from(fileBuffer).toString('base64'), // Store as base64
+        values.category
+      );
+
+      console.log('Dataset registered with ID:', datasetId);
+    } catch (error) {
+      console.error('Error uploading dataset:', error);
+    }
   }
 
   return (

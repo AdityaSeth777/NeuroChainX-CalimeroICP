@@ -3,9 +3,15 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { cn } from '@/lib/utils';
-import { DynamicWidget } from '@/components/DynamicWidget';
+import dynamic from 'next/dynamic';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Dynamically import the DynamicWidget with no SSR
+const DynamicWidget = dynamic(
+  () => import('@/components/DynamicWidget').then(mod => mod.DynamicWidget),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: 'AI Model Training Marketplace',

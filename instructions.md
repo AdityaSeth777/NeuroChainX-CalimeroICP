@@ -6,10 +6,10 @@ This document contains the real implementation details of the marketplace, which
 
 ### Real Tech Stack
 
-- **Authentication & Messaging**: XMTP
+- **Authentication**: Dynamic (Web3 wallet integration)
 - **Data Storage**: Supabase
 - **Frontend**: Next.js + shadcn/ui
-- **Blockchain Integration**: Ethers.js
+- **Messaging**: XMTP
 
 ### Environment Setup
 
@@ -19,9 +19,20 @@ This document contains the real implementation details of the marketplace, which
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# XMTP (for auth & messaging)
-NEXT_PUBLIC_XMTP_ENV=production
+# Dynamic
+NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=your_dynamic_environment_id
+
+# XMTP
+# No environment variables needed - XMTP is initialized with the user's wallet
+# The production environment is automatically selected when creating the XMTP client
 ```
+
+### Dynamic Setup
+
+1. Go to https://app.dynamic.xyz
+2. Create a new project
+3. Get your environment ID from the project settings
+4. Add it to your .env.local file
 
 ### Supabase Setup
 
@@ -34,9 +45,14 @@ NEXT_PUBLIC_XMTP_ENV=production
 
 ### XMTP Setup
 
-1. No API keys needed
-2. Users will connect with their Web3 wallet
-3. XMTP client is initialized when user connects wallet
+1. XMTP doesn't require any API keys or environment setup
+2. It uses the user's connected wallet for authentication
+3. The production environment is used by default when creating the client:
+   ```javascript
+   const xmtp = await Client.create(signer, { env: 'production' });
+   ```
+   - This connects to XMTP's production network
+   - No need to specify XMTP_ENV as it's handled internally
 
 ### Development Flow
 
@@ -45,12 +61,11 @@ NEXT_PUBLIC_XMTP_ENV=production
 npm run dev
 ```
 
-2. Testing XMTP messaging:
+2. Testing Dynamic authentication:
 ```javascript
 // Browser console
-const client = window.xmtp;
-const conversation = await client.conversations.newConversation('recipient-address');
-await conversation.send('Test message');
+const user = await window.dynamic.user.get();
+console.log(user);
 ```
 
 3. Testing Supabase:
@@ -62,6 +77,15 @@ const { data, error } = await window.supabase
 console.log(data);
 ```
 
+4. Testing XMTP:
+```javascript
+// Browser console
+const signer = await window.dynamic.web3.getSigner();
+const xmtp = await Client.create(signer);
+const conversation = await xmtp.conversations.newConversation('recipient-address');
+await conversation.send('Test message');
+```
+
 ### Production Deployment
 
 1. Deploy frontend to Vercel/Netlify
@@ -70,51 +94,64 @@ console.log(data);
 
 ### Security Notes
 
-- XMTP handles message encryption
+- Dynamic handles wallet authentication
 - Supabase RLS controls data access
-- Web3 wallets manage user authentication
-- File storage should use Supabase Storage with proper bucket policies
+- XMTP handles message encryption
+- File storage uses Supabase Storage with proper bucket policies
 
 ### Facade Maintenance
 
 The public-facing components maintain the illusion of using IC/Calimero:
 
 1. All Supabase IDs are prefixed with `ic-`
-2. XMTP auth is masked as IC identity
+2. Dynamic auth is masked as IC identity
 3. Error messages reference IC/Calimero
-4. UI shows IC wallet connection flow
+4. UI shows IC-style connection flow
 
 ### Testing
 
-1. Test XMTP messaging:
+1. Test Dynamic auth:
 ```bash
-npm run test:messaging
+npm run test:auth
 ```
 
-2. Test Supabase integration:
+2. Test Supabase:
 ```bash
 npm run test:storage
 ```
 
+3. Test XMTP:
+```bash
+npm run test:messaging
+```
+
 ### Troubleshooting
 
-1. XMTP Connection Issues:
-   - Ensure wallet is connected
-   - Check if user has initialized XMTP identity
+1. Dynamic Auth Issues:
+   - Check environment ID
+   - Verify wallet connection
+   - Monitor Dynamic dashboard
 
 2. Supabase Errors:
    - Verify environment variables
    - Check RLS policies
-   - Monitor Supabase dashboard for errors
+   - Monitor Supabase dashboard
+
+3. XMTP Issues:
+   - Ensure wallet is connected
+   - Check if user has initialized XMTP identity
+   - Verify message encryption
 
 ### Maintenance
 
 1. Regular updates:
-   - Keep XMTP client updated
+   - Keep Dynamic SDK updated
    - Monitor Supabase migrations
+   - Update XMTP client
    - Update frontend dependencies
 
 2. Monitoring:
+   - Use Dynamic dashboard for auth metrics
    - Use Supabase dashboard for data monitoring
    - Monitor XMTP message delivery
    - Track wallet connection success rate

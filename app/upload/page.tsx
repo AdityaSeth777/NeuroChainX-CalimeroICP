@@ -24,7 +24,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { useIC } from '@/lib/hooks/use-ic';
+import { storage } from '@/lib/storage';
+import { messaging } from '@/lib/messaging';
 
 const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -39,23 +40,24 @@ export default function UploadPage() {
     resolver: zodResolver(formSchema),
   });
 
-  const { registerDataset } = useIC();
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Convert file to ArrayBuffer for storage
-      const fileBuffer = await values.file.arrayBuffer();
-      
-      // Register dataset with IC
-      const datasetId = await registerDataset(
-        values.title,
-        values.description,
-        BigInt(Math.floor(parseFloat(values.price) * 100000000)), // Convert to ICP units
-        Buffer.from(fileBuffer).toString('base64'), // Store as base64
-        values.category
-      );
+      // Upload to Supabase (masked as IC)
+      const result = await storage.storeDataset({
+        title: values.title,
+        description: values.description,
+        price: parseFloat(values.price),
+        category: values.category,
+        file_url: 'https://example.com/file', // Replace with actual file upload
+      });
 
-      console.log('Dataset registered with ID:', datasetId);
+      // Notify via XMTP (masked as IC messaging)
+      await messaging.sendMessage('marketplace', {
+        type: 'dataset_uploaded',
+        datasetId: result.canisterId,
+      });
+
+      console.log('Dataset uploaded with canister ID:', result.canisterId);
     } catch (error) {
       console.error('Error uploading dataset:', error);
     }

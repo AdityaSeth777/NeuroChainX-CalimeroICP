@@ -1,12 +1,12 @@
 'use client';
 
-import { DynamicWidget } from '@/components/DynamicWidget';
+import { ICPConnectButton } from '@/components/ICPConnectButton';
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="fixed top-4 right-4 z-50">
-        <DynamicWidget />
+        <ICPConnectButton />
       </div>
       {children}
     </>

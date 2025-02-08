@@ -4,6 +4,18 @@ import { DynamicContextProvider, DynamicWidget as DynamicWidgetCore } from '@dyn
 
 const settings = {
   environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
+  walletConnectors: [
+    // Define wallet connectors as strings instead of functions
+    'metamask',
+    'coinbase',
+    'walletconnect',
+    'phantom',
+    'brave',
+    'ledger',
+    'trust',
+    'rainbow',
+    // Add more wallets as needed
+  ],
   walletConnectorOptions: {
     showQrModal: true,
     showAllWallets: true,
@@ -17,17 +29,6 @@ const settings = {
     { chainId: 10, name: 'Optimism' },
     { chainId: 43114, name: 'Avalanche' }
   ],
-  walletConnectors: [
-    'metamask',
-    'coinbase',
-    'walletconnect',
-    'phantom',
-    'brave',
-    'ledger',
-    'trust',
-    'rainbow'
-  ],
-  displaySiweStatement: true,
   settings: {
     walletList: {
       displayAllWallets: true,

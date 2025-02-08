@@ -10,14 +10,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Download, FileJson } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { Download, FileJson, Home } from 'lucide-react';
+import { useIC } from '@/lib/hooks/use-ic';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 interface Dataset {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: bigint;
   category: string;
   owner_id: string;
   created_at: string;
@@ -27,43 +29,51 @@ export default function Marketplace() {
   const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  const { actor, purchaseDataset } = useIC();
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchDatasets();
-  }, [category, sortBy]);
+  }, [category, sortBy, actor]);
 
   const fetchDatasets = async () => {
-    let query = supabase.from('datasets').select('*');
-
-    if (category !== 'all') {
-      query = query.eq('category', category);
-    }
-
-    switch (sortBy) {
-      case 'oldest':
-        query = query.order('created_at', { ascending: true });
-        break;
-      case 'price-asc':
-        query = query.order('price', { ascending: true });
-        break;
-      case 'price-desc':
-        query = query.order('price', { ascending: false });
-        break;
-      default: // newest
-        query = query.order('created_at', { ascending: false });
-    }
-
-    const { data, error } = await query;
-    if (error) {
+    if (!actor) return;
+    try {
+      const data = await actor.list_datasets();
+      setDatasets(data);
+    } catch (error) {
       console.error('Error fetching datasets:', error);
-      return;
     }
-    setDatasets(data || []);
+  };
+
+  const handlePurchase = async (datasetId: string, price: bigint) => {
+    try {
+      await purchaseDataset(datasetId);
+      toast({
+        title: "Success!",
+        description: "Dataset purchased successfully.",
+      });
+    } catch (error) {
+      console.error('Error purchasing dataset:', error);
+      toast({
+        title: "Error",
+        description: "Failed to purchase dataset. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Dataset Marketplace</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Dataset Marketplace</h1>
+        <Button variant="outline" asChild>
+          <Link href="/">
+            <Home className="w-4 h-4 mr-2" />
+            Home
+          </Link>
+        </Button>
+      </div>
 
       {/* Filters */}
       <div className="flex gap-4 mb-8">
@@ -108,8 +118,14 @@ export default function Marketplace() {
                 {dataset.description}
               </p>
               <div className="flex justify-between items-center">
-                <span className="font-semibold">{dataset.price} ICP</span>
-                <Button variant="outline" size="sm">
+                <span className="font-semibold">
+                  {Number(dataset.price) / 100000000} ICP
+                </span>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handlePurchase(dataset.id, dataset.price)}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Purchase
                 </Button>

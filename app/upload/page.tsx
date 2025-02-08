@@ -21,11 +21,12 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Upload } from 'lucide-react';
+import { Home, Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { storage } from '@/lib/storage';
-import { messaging } from '@/lib/messaging';
+import { useIC } from '@/lib/hooks/use-ic';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -36,38 +37,58 @@ const formSchema = z.object({
 });
 
 export default function UploadPage() {
+  const { registerDataset } = useIC();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Upload to Supabase (masked as IC)
-      const result = await storage.storeDataset({
-        title: values.title,
-        description: values.description,
-        price: parseFloat(values.price),
-        category: values.category,
-        file_url: 'https://example.com/file', // Replace with actual file upload
+      // Convert price to BigInt (ICP uses e8s - 8 decimal places)
+      const priceE8s = BigInt(Math.floor(parseFloat(values.price) * 100000000));
+      
+      // Upload file to IC asset canister (simplified for demo)
+      const fileUrl = 'ic://' + Date.now();
+
+      // Register dataset on IC
+      const result = await registerDataset(
+        values.title,
+        values.description,
+        priceE8s,
+        fileUrl,
+        values.category
+      );
+
+      toast({
+        title: "Success!",
+        description: "Dataset uploaded successfully.",
       });
 
-      // Notify via XMTP (masked as IC messaging)
-      await messaging.sendMessage('marketplace', {
-        type: 'dataset_uploaded',
-        datasetId: result.canisterId,
-      });
-
-      console.log('Dataset uploaded with canister ID:', result.canisterId);
+      form.reset();
     } catch (error) {
       console.error('Error uploading dataset:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload dataset. Please try again.",
+        variant: "destructive",
+      });
     }
   }
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-8">Upload Dataset</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Upload Dataset</h1>
+        <Button variant="outline" asChild>
+          <Link href="/">
+            <Home className="w-4 h-4 mr-2" />
+            Home
+          </Link>
+        </Button>
+      </div>
 
+      <Card className="max-w-2xl mx-auto p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField

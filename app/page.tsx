@@ -1,68 +1,116 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Database, FileJson, ShieldCheck, Wallet } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useAccount } from 'wagmi';
+import { WalletConnect } from '@/components/WalletConnect';
+import { ICPConnectButton } from '@/components/ICPConnectButton';
 
 export default function Home() {
+  const router = useRouter();
+  const { isConnected: isMetaMaskConnected } = useAccount();
+
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background to-secondary">
+    <main className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Decentralized AI Model Training Marketplace
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            A secure platform for trading AI training datasets using ICP smart contracts
-            and advanced encryption
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" asChild>
-              <Link href="/marketplace">Browse Datasets</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/upload">Upload Dataset</Link>
-            </Button>
+      <section className="min-h-[70vh] flex items-center">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              AI Model Training Marketplace
+            </h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              A secure, decentralized platform for trading AI training datasets
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Button 
+                size="lg" 
+                onClick={() => handleNavigation('/marketplace')}
+              >
+                Browse Datasets
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={() => handleNavigation('/upload')}
+              >
+                Upload Dataset
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <Card className="p-6">
-            <Database className="w-12 h-12 mb-4 text-primary" />
-            <h3 className="text-xl font-semibold mb-2">Secure Data Storage</h3>
-            <p className="text-muted-foreground">
-              Encrypted dataset storage using Calimero SDK ensuring data privacy and
-              security
-            </p>
-          </Card>
-          <Card className="p-6">
-            <ShieldCheck className="w-12 h-12 mb-4 text-primary" />
-            <h3 className="text-xl font-semibold mb-2">Smart Contracts</h3>
-            <p className="text-muted-foreground">
-              Secure and transparent transactions powered by ICP smart contracts
-            </p>
-          </Card>
-          <Card className="p-6">
-            <FileJson className="w-12 h-12 mb-4 text-primary" />
-            <h3 className="text-xl font-semibold mb-2">AI Model Training</h3>
-            <p className="text-muted-foreground">
-              Seamless integration with PyTorch for efficient model training
-            </p>
-          </Card>
-          <Card className="p-6">
-            <Wallet className="w-12 h-12 mb-4 text-primary" />
-            <h3 className="text-xl font-semibold mb-2">ICP Payments</h3>
-            <p className="text-muted-foreground">
-              Simple and secure payments using Internet Computer Protocol
-            </p>
-          </Card>
+      {/* Features */}
+      <section className="py-16 bg-muted/10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <Card key={index} className="feature-card p-6">
+                <feature.icon className="feature-icon w-8 h-8 mb-4" />
+                <h3 className="feature-title font-semibold mb-2">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-muted-foreground mb-4 md:mb-0">
+              © 2025 AI Model Training Marketplace
+            </p>
+            <nav>
+              <ul className="flex space-x-6">
+                <li>
+                  <Link href="/marketplace" className="text-sm text-muted-foreground hover:text-foreground">
+                    Marketplace
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/upload" className="text-sm text-muted-foreground hover:text-foreground">
+                    Upload
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
+
+const features = [
+  {
+    icon: Database,
+    title: "Secure Storage",
+    description: "End-to-end encrypted dataset storage"
+  },
+  {
+    icon: ShieldCheck,
+    title: "Smart Contracts",
+    description: "Secure transactions with smart contracts"
+  },
+  {
+    icon: FileJson,
+    title: "AI Integration",
+    description: "Seamless integration with AI models"
+  },
+  {
+    icon: Wallet,
+    title: "Multi-Wallet Support",
+    description: "Support for multiple blockchain wallets"
+  }
+];

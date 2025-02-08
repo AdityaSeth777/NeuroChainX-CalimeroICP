@@ -1,163 +1,160 @@
-# Web3 AI Model Training Marketplace
+# NeuroChainX - AI Model Training Marketplace
 
-A production-ready decentralized marketplace for AI training datasets built with Next.js and Internet Computer Protocol (ICP).
+![](./assets/cover.jpg)
 
-## 🚀 Quick Start
+A decentralized marketplace for AI training datasets built with Next.js, Calimero SDK, and Internet Computer Protocol (ICP). The platform leverages ICP's robust infrastructure for secure transactions, Calimero for encrypted data storage, and supports over 600 wallets via Coinbase and WalletConnect.
 
-### Prerequisites
+This project was developed for the **[Calimero x ICP Hackathon](https://dorahacks.io/hackathon/calimero-x-icp/detail)**, an initiative to push the boundaries of secure, decentralized AI training solutions.
 
-1. Install Node.js (v16 or later)
-2. Install DFX (Internet Computer SDK):
-```bash
-sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-```
-3. Install Rust toolchain:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
+---
 
-### Environment Setup
+## 🔍 About Calimero & Internet Computer (ICP)
 
-1. Clone the repository
-2. Create a `.env.local` file:
-```bash
-# Internet Computer
-IC_HOST=https://ic0.app
-IC_CANISTER_ID=your_canister_id
-```
+### 🌐 Internet Computer (ICP)
+The **Internet Computer Protocol (ICP)** is a blockchain network designed for high-speed, scalable decentralized applications. It allows for smart contract execution on-chain, ensuring transparency, security, and reduced reliance on traditional cloud services.
 
-### Development
+### 🔒 Calimero SDK
+**Calimero** provides encrypted data storage and private shards, ensuring that AI training datasets remain secure and accessible only to authorized users. With seamless blockchain integration, it enables efficient data management and privacy-first computations.
 
-1. Install dependencies:
-```bash
-npm install
-```
+---
 
-2. Start the development server:
-```bash
-npm run dev
-```
+## 🚀 Features
 
-3. Deploy smart contracts:
-```bash
-dfx deploy
-```
+- 🔐 **Secure dataset storage** with Calimero encryption  
+- 💰 **Multi-wallet support** (600+ wallets via WalletConnect & Coinbase)  
+- 🤖 **AI model integration** for seamless dataset training  
+- 🎨 **Modern UI** with neural network animations  
+- 🔒 **Decentralized authentication** using Internet Identity  
+- 📱 **Responsive design** for all devices  
+- 🌐 **Internet Computer (ICP) smart contract execution**  
+- 🔄 **Calimero-powered encrypted data sharing**  
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js, TypeScript, Tailwind CSS, shadcn/ui  
+- **Blockchain**: Internet Computer Protocol (ICP)  
+- **Storage**: Calimero SDK (Encrypted AI dataset storage)  
+- **Authentication**: Internet Identity  
+- **Smart Contracts**: Rust-based ICP Canisters  
+- **Wallet Support**: WalletConnect (600+ wallets), Coinbase, Plug, MetaMask, Phantom  
+
+---
 
 ## 🏗 Architecture
 
 ### Frontend (Next.js)
-- Modern React with TypeScript
-- Dark theme by default
-- Responsive Tailwind CSS design
-- shadcn/ui components
-- Client-side IC integration
+- Built with modern React and TypeScript  
+- Neural network-themed UI components  
+- Client-side ICP and WalletConnect integration  
+- Responsive Tailwind CSS design  
+- Advanced animations and effects  
 
 ### Backend (Internet Computer)
-- Rust-based canisters
-- Smart contract logic for:
-  - Dataset management
-  - Payment processing
-  - Access control
+- Rust-based smart contracts (canisters)  
+- Secure dataset management with ICP  
+- Payment processing and access control  
+- Integration with Calimero SDK for encrypted storage  
 
-## 🔐 Security Setup
+---
 
-### Internet Computer Integration
+## 🚀 Quick Start
 
-1. Generate a new identity:
-```bash
-dfx identity new development
-dfx identity use development
-```
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-2. Export the identity:
-```bash
-dfx identity export development > identity.pem
-```
+2. Set up environment variables:
+   ```bash
+   # Internet Computer
+   IC_HOST=https://ic0.app
+   IC_CANISTER_ID=your_canister_id
+   ```
 
-3. Deploy canisters:
-```bash
-dfx deploy --network ic
-```
+3. Install Wallets:
+   - [Plug Wallet](https://plugwallet.ooo/)
+   - [MetaMask](https://metamask.io/)
+   - [Coinbase Wallet](https://www.coinbase.com/wallet)
+   - [Phantom Wallet](https://phantom.app/)
 
-## 🌍 Global Deployment
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-### Frontend Deployment
+---
+
+## 💳 Multi-Wallet Support (600+ Wallets)
+
+1. Install **Plug Wallet**, **MetaMask**, **Coinbase Wallet**, **Phantom Wallet**, or **any WalletConnect-supported wallet**.
+2. Create or import an existing wallet.
+3. Fund your wallet with ICP or supported tokens.
+4. Connect your wallet to NeuroChainX.
+5. Purchase datasets with seamless one-click transactions.
+
+---
+
+## 🔐 Security Features
+
+- 🔑 **End-to-end encryption** with Calimero SDK  
+- 🔐 **Secure authentication** via Internet Identity  
+- 📜 **Smart contract-based access control**  
+- 🔄 **Encrypted data storage & transfer**  
+- 💳 **Multi-wallet secure transactions**  
+
+---
+
+## 📦 Smart Contract Development
+
+1. Install Rust toolchain:
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+
+2. Install DFX SDK:
+   ```bash
+   sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+   ```
+
+3. Deploy smart contracts:
+   ```bash
+   dfx deploy --network ic
+   ```
+
+---
+
+## 🌍 Production Deployment
 
 1. Build the application:
-```bash
-npm run build
-```
+   ```bash
+   npm run build
+   ```
 
-2. Deploy to your preferred hosting (Vercel/Netlify):
-```bash
-# Vercel
-vercel --prod
+2. Deploy to Internet Computer:
+   ```bash
+   dfx deploy --network ic
+   ```
 
-# Netlify
-netlify deploy --prod
-```
-
-### Smart Contract Deployment
-
-1. Prepare for production:
-```bash
-dfx build --network ic
-```
-
-2. Deploy to IC mainnet:
-```bash
-dfx deploy --network ic
-```
-
-3. Update environment variables with production canister IDs
-
-## 🔧 Configuration
-
-### Internet Computer
-- Network: `ic` (mainnet) or `local` (development)
-- Identity management
-- Canister settings
-
-## 📦 Features
-
-- 🎨 Dark theme by default
-- 💰 ICP payment integration
-- 📊 Dataset marketplace
-- 🤖 AI model integration
-- 🔑 Access control
-- 📱 Responsive design
-
-## 🛠 Development Guidelines
-
-1. Smart Contract Development
-   - Write tests for all canisters
-   - Use proper error handling
-   - Implement access control
-
-2. Frontend Development
-   - Follow Next.js best practices
-   - Maintain type safety
-   - Use proper error boundaries
-
-3. Security
-   - Regular security audits
-   - Key rotation
-   - Access control testing
-
-## 📄 License
-
-MIT License
+---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit changes
-4. Push to the branch
-5. Open a Pull Request
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push to the branch.
+5. Open a Pull Request.
 
-## ⚠️ Important Notes
+---
 
-- Keep environment variables secure
-- Regular security updates
-- Monitor smart contract activity
+## 📄 License
+
+Released under the [**MIT License**](./LICENSE).
+
+---
+
+![Doctor Who Goodbye GIF](https://64.media.tumblr.com/42d7c6b001ba95ca6f4319408a2eee10/tumblr_mydsowV24g1qb6ikpo1_250.gifv)  
+*"We all change. When you think about it, we are all different people all through our lives. And that's okay. That's good. You've got to keep moving so long as you remember all the people that you used to be."* – The Doctor.
+

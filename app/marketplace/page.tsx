@@ -11,15 +11,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Download, FileJson, Home } from 'lucide-react';
-import { useIC } from '@/lib/hooks/use-ic';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
+import { processPayment } from '@/lib/payment';
 
 interface Dataset {
   id: string;
   title: string;
   description: string;
-  price: bigint;
+  price: number;
   category: string;
   owner_id: string;
   created_at: string;
@@ -29,30 +30,74 @@ export default function Marketplace() {
   const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
-  const { actor, purchaseDataset } = useIC();
+  const [processing, setProcessing] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchDatasets();
-  }, [category, sortBy, actor]);
+  }, [category, sortBy]);
 
   const fetchDatasets = async () => {
-    if (!actor) return;
     try {
-      const data = await actor.list_datasets();
-      setDatasets(data);
+      let query = supabase.from('datasets').select('*');
+
+      if (category !== 'all') {
+        query = query.eq('category', category);
+      }
+
+      switch (sortBy) {
+        case 'newest':
+          query = query.order('created_at', { ascending: false });
+          break;
+        case 'oldest':
+          query = query.order('created_at', { ascending: true });
+          break;
+        case 'price-asc':
+          query = query.order('price', { ascending: true });
+          break;
+        case 'price-desc':
+          query = query.order('price', { ascending: false });
+          break;
+      }
+
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      setDatasets(data || []);
     } catch (error) {
       console.error('Error fetching datasets:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch datasets. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
-  const handlePurchase = async (datasetId: string, price: bigint) => {
+  const handlePurchase = async (datasetId: string, price: number) => {
     try {
-      await purchaseDataset(datasetId);
-      toast({
-        title: "Success!",
-        description: "Dataset purchased successfully.",
-      });
+      setProcessing(datasetId);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "Please connect your wallet first.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const result = await processPayment(datasetId, price, user.id);
+
+      if (result.success) {
+        toast({
+          title: "Success!",
+          description: "Dataset purchased successfully. You can now access the data.",
+        });
+      } else {
+        throw new Error(result.error || 'Payment failed');
+      }
     } catch (error) {
       console.error('Error purchasing dataset:', error);
       toast({
@@ -60,22 +105,23 @@ export default function Marketplace() {
         description: "Failed to purchase dataset. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setProcessing(null);
     }
   };
 
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dataset Marketplace</h1>
         <Button variant="outline" asChild>
           <Link href="/">
             <Home className="w-4 h-4 mr-2" />
             Home
           </Link>
         </Button>
+        <h1 className="text-3xl font-bold">Dataset Marketplace</h1>
       </div>
 
-      {/* Filters */}
       <div className="flex gap-4 mb-8">
         <Select value={category} onValueChange={setCategory}>
           <SelectTrigger className="w-[180px]">
@@ -102,7 +148,6 @@ export default function Marketplace() {
         </Select>
       </div>
 
-      {/* Dataset Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {datasets.length > 0 ? (
           datasets.map((dataset) => (
@@ -119,15 +164,16 @@ export default function Marketplace() {
               </p>
               <div className="flex justify-between items-center">
                 <span className="font-semibold">
-                  {Number(dataset.price) / 100000000} ICP
+                  {dataset.price} ICP
                 </span>
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={() => handlePurchase(dataset.id, dataset.price)}
+                  disabled={processing === dataset.id}
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Purchase
+                  {processing === dataset.id ? 'Processing...' : 'Purchase'}
                 </Button>
               </div>
             </Card>

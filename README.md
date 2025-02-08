@@ -1,56 +1,35 @@
-# Web3 AI Model Training Marketplace
+# AI Model Training Marketplace on Internet Computer
 
-A production-ready decentralized marketplace for AI training datasets built with Next.js and Internet Computer Protocol (ICP).
+A decentralized marketplace for AI training datasets built with Next.js and Internet Computer Protocol (ICP). The platform leverages ICP's robust infrastructure for secure transactions and Calimero for encrypted data storage.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-### Prerequisites
+- 🔐 Secure dataset storage with Calimero encryption
+- 💰 Native ICP payments via Plug wallet
+- 🤖 AI model integration
+- 🎨 Modern UI with neural network animations
+- 🔒 Decentralized authentication
+- 📱 Responsive design
+- 🔥 Custom fiery cursor
+- ✨ Parallax scrolling effects
 
-1. Install Node.js (v16 or later)
-2. Install DFX (Internet Computer SDK):
-```bash
-sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-```
-3. Install Rust toolchain:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
+## 🛠 Tech Stack
 
-### Environment Setup
-
-1. Clone the repository
-2. Create a `.env.local` file:
-```bash
-# Internet Computer
-IC_HOST=https://ic0.app
-IC_CANISTER_ID=your_canister_id
-```
-
-### Development
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Start the development server:
-```bash
-npm run dev
-```
-
-3. Deploy smart contracts:
-```bash
-dfx deploy
-```
+- **Frontend**: Next.js, TypeScript, Tailwind CSS, shadcn/ui
+- **Blockchain**: Internet Computer Protocol (ICP)
+- **Storage**: Calimero SDK
+- **Authentication**: Internet Identity
+- **Smart Contracts**: Rust
+- **Wallet**: Plug
 
 ## 🏗 Architecture
 
 ### Frontend (Next.js)
 - Modern React with TypeScript
-- Dark theme by default
+- Neural network-themed UI components
+- Client-side ICP integration
 - Responsive Tailwind CSS design
-- shadcn/ui components
-- Client-side IC integration
+- Custom animations and effects
 
 ### Backend (Internet Computer)
 - Rust-based canisters
@@ -58,20 +37,63 @@ dfx deploy
   - Dataset management
   - Payment processing
   - Access control
+- Calimero integration for encrypted storage
 
-## 🔐 Security Setup
+## 🚀 Quick Start
 
-### Internet Computer Integration
-
-1. Generate a new identity:
+1. Install dependencies:
 ```bash
-dfx identity new development
-dfx identity use development
+npm install
 ```
 
-2. Export the identity:
+2. Set up environment variables:
 ```bash
-dfx identity export development > identity.pem
+# Internet Computer
+IC_HOST=https://ic0.app
+IC_CANISTER_ID=your_canister_id
+
+# Calimero
+CALIMERO_API_KEY=your_api_key
+CALIMERO_PROJECT_ID=your_project_id
+```
+
+3. Install Plug Wallet:
+   - Visit [Plug Wallet](https://plugwallet.ooo/)
+   - Install the browser extension
+   - Create or import your wallet
+   - Add ICP tokens to your wallet
+
+4. Start development server:
+```bash
+npm run dev
+```
+
+## 💳 Using Plug Wallet
+
+1. Install the Plug wallet extension from [plugwallet.ooo](https://plugwallet.ooo/)
+2. Create a new wallet or import existing one
+3. Fund your wallet with ICP tokens
+4. Connect your wallet to the marketplace
+5. Purchase datasets seamlessly with one-click transactions
+
+## 🔐 Security Features
+
+- End-to-end encryption with Calimero
+- Secure authentication via Internet Identity
+- Smart contract-based access control
+- Encrypted data storage and transfer
+- Secure wallet integration
+
+## 📦 Smart Contract Development
+
+1. Install Rust toolchain:
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+2. Install DFX:
+```bash
+sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
 ```
 
 3. Deploy canisters:
@@ -79,74 +101,17 @@ dfx identity export development > identity.pem
 dfx deploy --network ic
 ```
 
-## 🌍 Global Deployment
-
-### Frontend Deployment
+## 🌍 Production Deployment
 
 1. Build the application:
 ```bash
 npm run build
 ```
 
-2. Deploy to your preferred hosting (Vercel/Netlify):
-```bash
-# Vercel
-vercel --prod
-
-# Netlify
-netlify deploy --prod
-```
-
-### Smart Contract Deployment
-
-1. Prepare for production:
-```bash
-dfx build --network ic
-```
-
-2. Deploy to IC mainnet:
+2. Deploy to IC:
 ```bash
 dfx deploy --network ic
 ```
-
-3. Update environment variables with production canister IDs
-
-## 🔧 Configuration
-
-### Internet Computer
-- Network: `ic` (mainnet) or `local` (development)
-- Identity management
-- Canister settings
-
-## 📦 Features
-
-- 🎨 Dark theme by default
-- 💰 ICP payment integration
-- 📊 Dataset marketplace
-- 🤖 AI model integration
-- 🔑 Access control
-- 📱 Responsive design
-
-## 🛠 Development Guidelines
-
-1. Smart Contract Development
-   - Write tests for all canisters
-   - Use proper error handling
-   - Implement access control
-
-2. Frontend Development
-   - Follow Next.js best practices
-   - Maintain type safety
-   - Use proper error boundaries
-
-3. Security
-   - Regular security audits
-   - Key rotation
-   - Access control testing
-
-## 📄 License
-
-MIT License
 
 ## 🤝 Contributing
 
@@ -156,8 +121,6 @@ MIT License
 4. Push to the branch
 5. Open a Pull Request
 
-## ⚠️ Important Notes
+## 📄 License
 
-- Keep environment variables secure
-- Regular security updates
-- Monitor smart contract activity
+MIT License

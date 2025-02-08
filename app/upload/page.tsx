@@ -24,9 +24,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Home, Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { useIC } from '@/lib/hooks/use-ic';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -37,28 +38,45 @@ const formSchema = z.object({
 });
 
 export default function UploadPage() {
-  const { registerDataset } = useIC();
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Convert price to BigInt (ICP uses e8s - 8 decimal places)
-      const priceE8s = BigInt(Math.floor(parseFloat(values.price) * 100000000));
+      const { data: { user } } = await supabase.auth.getUser();
       
-      // Upload file to IC asset canister (simplified for demo)
-      const fileUrl = 'ic://' + Date.now();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "Please connect your wallet first.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      // Register dataset on IC
-      const result = await registerDataset(
-        values.title,
-        values.description,
-        priceE8s,
-        fileUrl,
-        values.category
-      );
+      const fileExt = values.file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const { data: fileData, error: fileError } = await supabase.storage
+        .from('datasets')
+        .upload(fileName, values.file);
+
+      if (fileError) throw fileError;
+
+      const { error: datasetError } = await supabase
+        .from('datasets')
+        .insert({
+          title: values.title,
+          description: values.description,
+          category: values.category,
+          price: parseFloat(values.price),
+          owner_id: user.id,
+          file_url: fileData?.path || '',
+        });
+
+      if (datasetError) throw datasetError;
 
       toast({
         title: "Success!",
@@ -66,6 +84,7 @@ export default function UploadPage() {
       });
 
       form.reset();
+      router.push('/marketplace');
     } catch (error) {
       console.error('Error uploading dataset:', error);
       toast({
@@ -79,13 +98,13 @@ export default function UploadPage() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Upload Dataset</h1>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="absolute top-4 left-4">
           <Link href="/">
             <Home className="w-4 h-4 mr-2" />
             Home
           </Link>
         </Button>
+        <h1 className="text-3xl font-bold mx-auto">Upload Dataset</h1>
       </div>
 
       <Card className="max-w-2xl mx-auto p-6">

@@ -5,29 +5,22 @@ import { DynamicContextProvider, DynamicWidget as DynamicWidgetCore } from '@dyn
 const settings = {
   environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
   walletConnectors: [
-    // Define wallet connectors as strings instead of functions
     'metamask',
+    'phantom',
+    'keplr',
     'coinbase',
     'walletconnect',
-    'phantom',
     'brave',
-    'ledger',
-    'trust',
-    'rainbow',
-    // Add more wallets as needed
+    'rainbow'
   ],
   walletConnectorOptions: {
     showQrModal: true,
     showAllWallets: true,
-    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
   },
   evmNetworks: [
     { chainId: 1, name: 'Ethereum' },
     { chainId: 137, name: 'Polygon' },
-    { chainId: 56, name: 'BNB Chain' },
-    { chainId: 42161, name: 'Arbitrum' },
-    { chainId: 10, name: 'Optimism' },
-    { chainId: 43114, name: 'Avalanche' }
+    { chainId: 56, name: 'BNB Chain' }
   ],
   settings: {
     walletList: {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export function Preloader() {
   const [loading, setLoading] = useState(true);
@@ -17,26 +18,14 @@ export function Preloader() {
 
   return (
     <div className="preloader">
-      <div className="neural-network">
-        <div className="neural-layer input-layer">
-          {[...Array(5)].map((_, i) => (
-            <div key={`input-${i}`} className="neuron">
-              <div className="synapse" />
-            </div>
-          ))}
-        </div>
-        <div className="neural-layer hidden-layer">
-          {[...Array(7)].map((_, i) => (
-            <div key={`hidden-${i}`} className="neuron">
-              <div className="synapse" />
-            </div>
-          ))}
-        </div>
-        <div className="neural-layer output-layer">
-          {[...Array(3)].map((_, i) => (
-            <div key={`output-${i}`} className="neuron" />
-          ))}
-        </div>
+      <div className="neural-network-container">
+        <Image
+          src="https://i.makeagif.com/media/7-23-2019/q3ItDm.gif"
+          alt="Neural Network"
+          width={400}
+          height={400}
+          className="neural-network-gif"
+        />
       </div>
       <div className="loading-text">Initializing AI Marketplace</div>
     </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { WalletConnect } from '@/components/WalletConnect';
 import {
   Select,
   SelectContent,
@@ -10,11 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Download, FileJson, Home } from 'lucide-react';
+import { Download, FileJson, Home, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { processPayment } from '@/lib/payment';
+import { Input } from '@/components/ui/input';
+import { useAccount } from 'wagmi';
 
 interface Dataset {
   id: string;
@@ -31,6 +34,8 @@ export default function Marketplace() {
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [processing, setProcessing] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { address, isConnected } = useAccount();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -76,19 +81,18 @@ export default function Marketplace() {
 
   const handlePurchase = async (datasetId: string, price: number) => {
     try {
-      setProcessing(datasetId);
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
+      if (!isConnected || !address) {
         toast({
           title: "Error",
-          description: "Please connect your wallet first.",
+          description: "Please connect your wallet first",
           variant: "destructive",
         });
         return;
       }
 
-      const result = await processPayment(datasetId, price, user.id);
+      setProcessing(datasetId);
+      
+      const result = await processPayment(datasetId, price, address);
 
       if (result.success) {
         toast({
@@ -110,6 +114,11 @@ export default function Marketplace() {
     }
   };
 
+  const filteredDatasets = datasets.filter(dataset =>
+    dataset.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dataset.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -120,9 +129,19 @@ export default function Marketplace() {
           </Link>
         </Button>
         <h1 className="text-3xl font-bold">Dataset Marketplace</h1>
+        <WalletConnect />
       </div>
 
-      <div className="flex gap-4 mb-8">
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search datasets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
         <Select value={category} onValueChange={setCategory}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Category" />
@@ -134,7 +153,6 @@ export default function Marketplace() {
             <SelectItem value="tabular">Tabular Data</SelectItem>
           </SelectContent>
         </Select>
-
         <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
@@ -149,21 +167,23 @@ export default function Marketplace() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {datasets.length > 0 ? (
-          datasets.map((dataset) => (
-            <Card key={dataset.id} className="p-6">
+        {filteredDatasets.length > 0 ? (
+          filteredDatasets.map((dataset) => (
+            <Card key={dataset.id} className="p-6 hover:shadow-lg transition-all duration-300 group">
               <div className="flex items-center gap-4 mb-4">
-                <FileJson className="w-8 h-8 text-primary" />
+                <div className="bg-primary/10 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                  <FileJson className="w-8 h-8 text-primary" />
+                </div>
                 <div>
                   <h3 className="font-semibold">{dataset.title}</h3>
                   <p className="text-sm text-muted-foreground">{dataset.category}</p>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                 {dataset.description}
               </p>
               <div className="flex justify-between items-center">
-                <span className="font-semibold">
+                <span className="font-semibold text-lg">
                   {dataset.price} ICP
                 </span>
                 <Button 
@@ -171,6 +191,7 @@ export default function Marketplace() {
                   size="sm"
                   onClick={() => handlePurchase(dataset.id, dataset.price)}
                   disabled={processing === dataset.id}
+                  className="hover:scale-105 transition-transform"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   {processing === dataset.id ? 'Processing...' : 'Purchase'}

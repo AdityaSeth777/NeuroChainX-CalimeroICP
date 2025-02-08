@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { cn } from '@/lib/utils';
 import { LayoutWrapper } from './LayoutWrapper';
-import { CustomCursor } from '@/components/CustomCursor';
 import { Preloader } from '@/components/Preloader';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -24,7 +23,6 @@ export default function RootLayout({
       <body className={cn(inter.className, "min-h-screen bg-background")}>
         <Providers>
           <Preloader />
-          <CustomCursor />
           <LayoutWrapper>{children}</LayoutWrapper>
         </Providers>
       </body>

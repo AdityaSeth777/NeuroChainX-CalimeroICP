@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Home, Upload } from 'lucide-react';
+import { Home, Upload, FileUp } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
@@ -98,16 +98,16 @@ export default function UploadPage() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <Button variant="outline" asChild className="absolute top-4 left-4">
+        <Button variant="outline" asChild>
           <Link href="/">
             <Home className="w-4 h-4 mr-2" />
             Home
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mx-auto">Upload Dataset</h1>
+        <h1 className="text-3xl font-bold">Upload Dataset</h1>
       </div>
 
-      <Card className="max-w-2xl mx-auto p-6">
+      <Card className="max-w-2xl mx-auto p-8 hover:shadow-lg transition-all duration-300">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -117,7 +117,11 @@ export default function UploadPage() {
                 <FormItem>
                   <FormLabel>Dataset Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter dataset title" {...field} />
+                    <Input 
+                      placeholder="Enter dataset title" 
+                      {...field}
+                      className="hover:border-primary/50 focus:border-primary transition-colors"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,7 +137,7 @@ export default function UploadPage() {
                   <FormControl>
                     <Textarea
                       placeholder="Describe your dataset..."
-                      className="resize-none"
+                      className="resize-none hover:border-primary/50 focus:border-primary transition-colors"
                       {...field}
                     />
                   </FormControl>
@@ -150,7 +154,7 @@ export default function UploadPage() {
                   <FormLabel>Category</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="hover:border-primary/50 focus:border-primary transition-colors">
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                     </FormControl>
@@ -176,6 +180,7 @@ export default function UploadPage() {
                       type="number"
                       step="0.01"
                       placeholder="Enter price in ICP"
+                      className="hover:border-primary/50 focus:border-primary transition-colors"
                       {...field}
                     />
                   </FormControl>
@@ -191,12 +196,23 @@ export default function UploadPage() {
                 <FormItem>
                   <FormLabel>Dataset File</FormLabel>
                   <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) =>
-                        field.onChange(e.target.files ? e.target.files[0] : null)
-                      }
-                    />
+                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
+                      <FileUp className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <Input
+                        type="file"
+                        onChange={(e) =>
+                          field.onChange(e.target.files ? e.target.files[0] : null)
+                        }
+                        className="hidden"
+                        id="file-upload"
+                      />
+                      <label 
+                        htmlFor="file-upload"
+                        className="cursor-pointer text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        Click to upload or drag and drop
+                      </label>
+                    </div>
                   </FormControl>
                   <FormDescription>
                     Upload your dataset file (max size: 1GB)
@@ -206,7 +222,10 @@ export default function UploadPage() {
               )}
             />
 
-            <Button type="submit" className="w-full">
+            <Button 
+              type="submit" 
+              className="w-full hover:scale-105 transition-transform"
+            >
               <Upload className="w-4 h-4 mr-2" />
               Upload Dataset
             </Button>

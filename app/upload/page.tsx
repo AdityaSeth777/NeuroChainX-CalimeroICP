@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Form,
   FormControl,
@@ -21,13 +22,16 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Home, Upload, FileUp } from 'lucide-react';
+import { Home, Upload, FileUp, Wallet } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { useAccount } from 'wagmi';
+import { WalletConnect } from '@/components/WalletConnect';
+import { ICPConnectButton } from '@/components/ICPConnectButton';
 
 const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -40,6 +44,7 @@ const formSchema = z.object({
 export default function UploadPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const { isConnected: isMetaMaskConnected } = useAccount();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -105,6 +110,32 @@ export default function UploadPage() {
           </Link>
         </Button>
         <h1 className="text-3xl font-bold">Upload Dataset</h1>
+        <div className="flex gap-4">
+          {/* Wallet Connections */}
+          <div className="flex flex-col items-end gap-6">
+            {/* Secondary Wallets */}
+            <div className="flex gap-4">
+              <div className="flex flex-col items-center gap-2">
+                <WalletConnect />
+                <Badge variant={isMetaMaskConnected ? "success" : "secondary"} className="text-xs">
+                  {isMetaMaskConnected ? "Connected" : "Not Connected"} (WalletConnect)
+                </Badge>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Button variant="outline">
+                  <Wallet className="w-4 h-4 mr-2" />
+                  Connect Phantom
+                </Button>
+                <Badge variant="secondary" className="text-xs">Not Connected (Solana)</Badge>
+              </div>
+            </div>
+            {/* Primary IC Connection */}
+            <div className="flex flex-col items-center gap-2">
+              <ICPConnectButton />
+              <Badge variant="default" className="text-xs">Internet Computer Protocol</Badge>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Card className="max-w-2xl mx-auto p-8 hover:shadow-lg transition-all duration-300">

@@ -9,8 +9,11 @@ import { Preloader } from '@/components/Preloader';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AI Model Training Marketplace',
-  description: 'Decentralized marketplace for AI training datasets',
+  title: 'NeuroChainX',
+  description: 'A decentralized marketplace for AI training datasets built with Next.js, Calimero SDK, and Internet Computer Protocol (ICP). The platform leverages ICPxs robust infrastructure for secure transactions, Calimero for encrypted data storage, and supports over 600 wallets via Coinbase and WalletConnect.',
+  icons: {
+    icon: './../assets/logo-ncai.jpeg', // Add your favicon file in the public directory
+  },
 };
 
 export default function RootLayout({

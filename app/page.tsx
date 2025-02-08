@@ -5,9 +5,14 @@ import { Database, FileJson, ShieldCheck, Wallet } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useAccount } from 'wagmi';
+import { WalletConnect } from '@/components/WalletConnect';
+import { ICPConnectButton } from '@/components/ICPConnectButton';
 
 export default function Home() {
   const router = useRouter();
+  const { isConnected: isMetaMaskConnected } = useAccount();
 
   const handleNavigation = (path: string) => {
     router.push(path);

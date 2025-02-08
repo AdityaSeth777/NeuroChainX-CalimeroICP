@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { WalletConnect } from '@/components/WalletConnect';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -11,13 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Download, FileJson, Home, Search } from 'lucide-react';
+import { Download, FileJson, Home, Search, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { processPayment } from '@/lib/payment';
 import { Input } from '@/components/ui/input';
 import { useAccount } from 'wagmi';
+import { WalletConnect } from '@/components/WalletConnect';
+import { ICPConnectButton } from '@/components/ICPConnectButton';
 
 interface Dataset {
   id: string;
@@ -35,7 +37,7 @@ export default function Marketplace() {
   const [sortBy, setSortBy] = useState('newest');
   const [processing, setProcessing] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const { address, isConnected } = useAccount();
+  const { address, isConnected: isMetaMaskConnected } = useAccount();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export default function Marketplace() {
 
   const handlePurchase = async (datasetId: string, price: number) => {
     try {
-      if (!isConnected || !address) {
+      if (!isMetaMaskConnected || !address) {
         toast({
           title: "Error",
           description: "Please connect your wallet first",
@@ -121,7 +123,7 @@ export default function Marketplace() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
         <Button variant="outline" asChild>
           <Link href="/">
             <Home className="w-4 h-4 mr-2" />
@@ -129,7 +131,34 @@ export default function Marketplace() {
           </Link>
         </Button>
         <h1 className="text-3xl font-bold">Dataset Marketplace</h1>
-        <WalletConnect />
+        
+        {/* Wallet Connections */}
+        <div className="flex flex-col items-end gap-4 w-full md:w-auto">
+          <div className="flex flex-wrap justify-end gap-4">
+            {/* MetaMask */}
+            <div className="flex flex-col items-center gap-2">
+              <WalletConnect />
+              <Badge variant={isMetaMaskConnected ? "success" : "secondary"} className="text-xs">
+                {isMetaMaskConnected ? "Connected" : "Not Connected"} (WalletConnect)
+              </Badge>
+            </div>
+            
+            {/* Coinbase */}
+            <div className="flex flex-col items-center gap-2">
+              <Button variant="outline">
+                <Wallet className="w-4 h-4 mr-2" />
+                Connect Coinbase
+              </Button>
+              <Badge variant="secondary" className="text-xs">Not Connected (Coinbase)</Badge>
+            </div>
+          </div>
+          
+          {/* Primary IC Connection */}
+          <div className="flex flex-col items-center gap-2">
+            <ICPConnectButton />
+            <Badge variant="default" className="text-xs">Internet Computer Protocol</Badge>
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-8">

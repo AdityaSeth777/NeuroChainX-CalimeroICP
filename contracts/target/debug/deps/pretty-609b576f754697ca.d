@@ -1,0 +1,8 @@
+/Users/adityaseth/Documents/GitHub/calimero-ic/contracts/target/debug/deps/libpretty-609b576f754697ca.rmeta: /Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/lib.rs /Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/render.rs
+
+/Users/adityaseth/Documents/GitHub/calimero-ic/contracts/target/debug/deps/libpretty-609b576f754697ca.rlib: /Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/lib.rs /Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/render.rs
+
+/Users/adityaseth/Documents/GitHub/calimero-ic/contracts/target/debug/deps/pretty-609b576f754697ca.d: /Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/lib.rs /Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/render.rs
+
+/Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/lib.rs:
+/Users/adityaseth/.cargo/registry/src/index.crates.io-6f17d22bba15001f/pretty-0.10.0/src/render.rs:
